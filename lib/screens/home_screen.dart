@@ -2653,7 +2653,7 @@ class _HomeScreenState extends State<HomeScreen> {
               : ListView.separated(
                   shrinkWrap: true,
                   itemCount: campaigns.length,
-                  separatorBuilder: (_, __) => const Divider(color: Colors.white12, height: 20),
+                  separatorBuilder: (ctx, i) => const Divider(color: Colors.white12, height: 20),
                   itemBuilder: (context, idx) {
                     final c = campaigns[idx];
                     return Column(
@@ -2763,7 +2763,7 @@ class _HomeScreenState extends State<HomeScreen> {
               : ListView.separated(
                   shrinkWrap: true,
                   itemCount: packages.length,
-                  separatorBuilder: (_, __) => const Divider(color: Colors.white12, height: 20),
+                  separatorBuilder: (ctx, i) => const Divider(color: Colors.white12, height: 20),
                   itemBuilder: (context, idx) {
                     final pkg = packages[idx];
                     return Column(
@@ -3540,7 +3540,7 @@ class _HomeScreenState extends State<HomeScreen> {
               : ListView.separated(
                   shrinkWrap: true,
                   itemCount: milestones.length,
-                  separatorBuilder: (_, __) => const Divider(color: Colors.white12, height: 16),
+                  separatorBuilder: (ctx, i) => const Divider(color: Colors.white12, height: 16),
                   itemBuilder: (context, idx) {
                     final m = milestones[idx];
                     return Column(
