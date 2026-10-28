@@ -130,11 +130,11 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
   // =========================================================================
   Widget _buildStoreInfoTab() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Center(
         child: Container(
           constraints: const BoxConstraints(maxWidth: 800),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -146,107 +146,135 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: const [
-                  Icon(Icons.business, color: Color(0xFFE60012)),
-                  SizedBox(width: 8),
-                  Text(
-                    'Cấu hình Thương hiệu, Địa chỉ & Tổng đài',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1B2A4A)),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 500;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: const [
+                      Icon(Icons.business, color: Color(0xFFE60012), size: 22),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Cấu hình Thương hiệu, Địa chỉ & Tổng đài',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1B2A4A),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Mọi thông tin bạn thay đổi tại đây sẽ lập tức hiển thị trên ứng dụng của tất cả khách hàng.',
-                style: TextStyle(fontSize: 12, color: Colors.black54),
-              ),
-              const Divider(height: 24),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'Mọi thông tin bạn thay đổi tại đây sẽ lập tức hiển thị trên ứng dụng của tất cả khách hàng.',
+                    style: TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                  const Divider(height: 24),
 
-              _buildField('Tên Gara / Thương hiệu', _nameCtrl, 'VD: GARA TIỆM XE MÁY & Ô TÔ BLACKMYTH AUTO', Icons.badge),
-              const SizedBox(height: 12),
-              _buildField('Địa chỉ trụ sở chính', _addrCtrl, 'VD: 68 Võ Văn Ngân, TP. Thủ Đức', Icons.location_on),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildField('Số Hotline CSKH', _hotlineCtrl, 'VD: 1900 6868', Icons.phone),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildField('Hotline Cứu hộ 24/7', _rescueCtrl, 'VD: 0909 686 868', Icons.emergency),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _buildField('Giờ mở cửa phục vụ', _hoursCtrl, 'VD: 07:30 - 18:00 (Tất cả các ngày trong tuần)', Icons.access_time),
-              const SizedBox(height: 16),
+                  _buildField('Tên Gara / Thương hiệu', _nameCtrl, 'VD: GARA TIỆM XE MÁY & Ô TÔ BLACKMYTH AUTO', Icons.badge),
+                  const SizedBox(height: 12),
+                  _buildField('Địa chỉ trụ sở chính', _addrCtrl, 'VD: 68 Võ Văn Ngân, TP. Thủ Đức', Icons.location_on),
+                  const SizedBox(height: 12),
 
-              const Text(
-                'Đường dẫn Mạng xã hội của Gara (Khách bấm trên app sẽ mở link này):',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF1B2A4A)),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(child: _buildField('Fanpage Facebook', _fbCtrl, 'Link Facebook tiệm', Icons.facebook)),
-                  const SizedBox(width: 12),
-                  Expanded(child: _buildField('Messenger / Zalo', _messCtrl, 'Link Messenger hoặc Zalo', Icons.chat)),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(child: _buildField('Kênh Youtube', _ytCtrl, 'Link Youtube tiệm', Icons.play_circle_fill)),
-                  const SizedBox(width: 12),
-                  Expanded(child: _buildField('Trang Web Gara', _webCtrl, 'Link Website tiệm', Icons.language)),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  OutlinedButton.icon(
-                    onPressed: () {
-                      Provider.of<StoreContentProvider>(context, listen: false).resetToDefaults();
-                      final def = StoreInfo.defaultInfo();
-                      setState(() {
-                        _nameCtrl.text = def.garageName;
-                        _addrCtrl.text = def.address;
-                        _hotlineCtrl.text = def.hotline;
-                        _rescueCtrl.text = def.rescueHotline;
-                        _hoursCtrl.text = def.openingHours;
-                        _fbCtrl.text = def.facebookUrl;
-                        _messCtrl.text = def.messengerUrl;
-                        _ytCtrl.text = def.youtubeUrl;
-                        _webCtrl.text = def.websiteUrl;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Đã khôi phục thông tin tiệm mặc định.')),
-                      );
-                    },
-                    icon: const Icon(Icons.restart_alt, size: 16),
-                    label: const Text('Khôi phục mặc định'),
-                  ),
-                  const SizedBox(width: 12),
-                  ElevatedButton.icon(
-                    onPressed: _saveStoreInfo,
-                    icon: const Icon(Icons.save, size: 18),
-                    label: const Text('LƯU THÔNG TIN TIỆM'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE60012),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                      textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  if (isNarrow) ...[
+                    _buildField('Số Hotline CSKH', _hotlineCtrl, 'VD: 1900 6868', Icons.phone),
+                    const SizedBox(height: 12),
+                    _buildField('Hotline Cứu hộ 24/7', _rescueCtrl, 'VD: 0909 686 868', Icons.emergency),
+                  ] else
+                    Row(
+                      children: [
+                        Expanded(child: _buildField('Số Hotline CSKH', _hotlineCtrl, 'VD: 1900 6868', Icons.phone)),
+                        const SizedBox(width: 12),
+                        Expanded(child: _buildField('Hotline Cứu hộ 24/7', _rescueCtrl, 'VD: 0909 686 868', Icons.emergency)),
+                      ],
                     ),
+                  const SizedBox(height: 12),
+                  _buildField('Giờ mở cửa phục vụ', _hoursCtrl, 'VD: 07:30 - 18:00 (Tất cả các ngày trong tuần)', Icons.access_time),
+                  const SizedBox(height: 16),
+
+                  const Text(
+                    'Đường dẫn Mạng xã hội của Gara (Khách bấm trên app sẽ mở link này):',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF1B2A4A)),
+                  ),
+                  const SizedBox(height: 10),
+
+                  if (isNarrow) ...[
+                    _buildField('Fanpage Facebook', _fbCtrl, 'Link Facebook tiệm', Icons.facebook),
+                    const SizedBox(height: 12),
+                    _buildField('Messenger / Zalo', _messCtrl, 'Link Messenger hoặc Zalo', Icons.chat),
+                    const SizedBox(height: 12),
+                    _buildField('Kênh Youtube', _ytCtrl, 'Link Youtube tiệm', Icons.play_circle_fill),
+                    const SizedBox(height: 12),
+                    _buildField('Trang Web Gara', _webCtrl, 'Link Website tiệm', Icons.language),
+                  ] else ...[
+                    Row(
+                      children: [
+                        Expanded(child: _buildField('Fanpage Facebook', _fbCtrl, 'Link Facebook tiệm', Icons.facebook)),
+                        const SizedBox(width: 12),
+                        Expanded(child: _buildField('Messenger / Zalo', _messCtrl, 'Link Messenger hoặc Zalo', Icons.chat)),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(child: _buildField('Kênh Youtube', _ytCtrl, 'Link Youtube tiệm', Icons.play_circle_fill)),
+                        const SizedBox(width: 12),
+                        Expanded(child: _buildField('Trang Web Gara', _webCtrl, 'Link Website tiệm', Icons.language)),
+                      ],
+                    ),
+                  ],
+                  const SizedBox(height: 24),
+
+                  // Responsive action buttons (Wrap prevents right overflow)
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 10,
+                    alignment: WrapAlignment.end,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          Provider.of<StoreContentProvider>(context, listen: false).resetToDefaults();
+                          final def = StoreInfo.defaultInfo();
+                          setState(() {
+                            _nameCtrl.text = def.garageName;
+                            _addrCtrl.text = def.address;
+                            _hotlineCtrl.text = def.hotline;
+                            _rescueCtrl.text = def.rescueHotline;
+                            _hoursCtrl.text = def.openingHours;
+                            _fbCtrl.text = def.facebookUrl;
+                            _messCtrl.text = def.messengerUrl;
+                            _ytCtrl.text = def.youtubeUrl;
+                            _webCtrl.text = def.websiteUrl;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Đã khôi phục thông tin tiệm mặc định.')),
+                          );
+                        },
+                        icon: const Icon(Icons.restart_alt, size: 16),
+                        label: const Text('Khôi phục mặc định'),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: _saveStoreInfo,
+                        icon: const Icon(Icons.save, size: 18),
+                        label: const Text('LƯU THÔNG TIN TIỆM'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFE60012),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),
@@ -263,18 +291,21 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12,
+              runSpacing: 8,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Chiến dịch dịch vụ & Chương trình Khuyến mãi (%)',
+                      'Chiến dịch dịch vụ & Khuyến mãi (%)',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1B2A4A)),
                     ),
                     Text(
-                      'Khách hàng sẽ nhìn thấy các khuyến mãi này khi bấm vào ô "% Chiến dịch dịch vụ".',
+                      'Hiển thị trong ô "% Chiến dịch dịch vụ" của khách hàng.',
                       style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                     ),
                   ],
@@ -305,41 +336,42 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     elevation: 1,
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(14),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: const Color(0xFFE60012).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(Icons.percent, color: Color(0xFFE60012)),
+                            child: const Icon(Icons.percent, color: Color(0xFFE60012), size: 20),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 4,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
-                                    Expanded(
-                                      child: Text(
-                                        c.title,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1B2A4A)),
-                                      ),
+                                    Text(
+                                      c.title,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF1B2A4A)),
                                     ),
                                     if (c.discountPercent > 0)
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFE60012),
                                           borderRadius: BorderRadius.circular(4),
                                         ),
                                         child: Text(
                                           'GIẢM ${c.discountPercent}%',
-                                          style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                                          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                   ],
@@ -353,17 +385,16 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                               ],
                             ),
                           ),
-                          const SizedBox(width: 12),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.blue, size: 20),
+                                icon: const Icon(Icons.edit, color: Colors.blue, size: 18),
                                 tooltip: 'Chỉnh sửa',
                                 onPressed: () => _showCampaignEditDialog(c),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 18),
                                 tooltip: 'Xóa',
                                 onPressed: () => _confirmDelete('khuyến mãi', () {
                                   provider.deleteCampaign(c.id);
@@ -392,8 +423,9 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(item == null ? 'Thêm Chiến Dịch Khuyến Mãi' : 'Chỉnh Sửa Chiến Dịch Khuyến Mãi'),
-        content: SizedBox(
-          width: 480,
+        content: Container(
+          constraints: const BoxConstraints(maxWidth: 480),
+          width: double.maxFinite,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -454,8 +486,11 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12,
+              runSpacing: 8,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -465,7 +500,7 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1B2A4A)),
                     ),
                     Text(
-                      'Khách hàng sẽ nhìn thấy các gói này khi bấm vào ô "Gói bảo dưỡng trả trước".',
+                      'Hiển thị trong ô "Gói bảo dưỡng trả trước" của khách hàng.',
                       style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                     ),
                   ],
@@ -491,34 +526,35 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     elevation: 1,
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(14),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: const Color(0xFF2ECC71).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(Icons.confirmation_number_outlined, color: Color(0xFF2ECC71)),
+                            child: const Icon(Icons.confirmation_number_outlined, color: Color(0xFF2ECC71), size: 20),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
+                                Wrap(
+                                  alignment: WrapAlignment.spaceBetween,
+                                  spacing: 8,
+                                  runSpacing: 4,
                                   children: [
-                                    Expanded(
-                                      child: Text(
-                                        pkg.name,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1B2A4A)),
-                                      ),
+                                    Text(
+                                      pkg.name,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF1B2A4A)),
                                     ),
                                     Text(
                                       _currency.format(pkg.price),
-                                      style: const TextStyle(color: Color(0xFF2ECC71), fontWeight: FontWeight.bold, fontSize: 15),
+                                      style: const TextStyle(color: Color(0xFF2ECC71), fontWeight: FontWeight.bold, fontSize: 14),
                                     ),
                                   ],
                                 ),
@@ -548,16 +584,15 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                               ],
                             ),
                           ),
-                          const SizedBox(width: 12),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.blue, size: 20),
+                                icon: const Icon(Icons.edit, color: Colors.blue, size: 18),
                                 onPressed: () => _showPackageEditDialog(pkg),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 18),
                                 onPressed: () => _confirmDelete('gói bảo dưỡng', () {
                                   provider.deletePackage(pkg.id);
                                 }),
@@ -585,8 +620,9 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(item == null ? 'Thêm Gói Bảo Dưỡng Trả Trước' : 'Chỉnh Sửa Gói Bảo Dưỡng'),
-        content: SizedBox(
-          width: 500,
+        content: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          width: double.maxFinite,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -652,18 +688,21 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12,
+              runSpacing: 8,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Lịch Trình Bảo Dưỡng Khuyến Nghị Theo Số KM',
+                      'Lịch Trình Bảo Dưỡng Khuyến Nghị',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1B2A4A)),
                     ),
                     Text(
-                      'Khách hàng sẽ tham khảo các mốc này khi bấm vào ô "Lịch bảo dưỡng".',
+                      'Hiển thị trong ô "Lịch bảo dưỡng" của khách hàng.',
                       style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                     ),
                   ],
@@ -689,12 +728,12 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     elevation: 1,
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(14),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                             decoration: BoxDecoration(
                               color: const Color(0xFFE60012).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
@@ -702,37 +741,38 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                             ),
                             child: Column(
                               children: [
-                                const Icon(Icons.speed, color: Color(0xFFE60012), size: 18),
+                                const Icon(Icons.speed, color: Color(0xFFE60012), size: 16),
                                 const SizedBox(height: 2),
                                 Text(
                                   '${NumberFormat('#,###').format(m.km)}\nKM',
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFE60012), fontSize: 11),
+                                  style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFE60012), fontSize: 10),
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
+                                Wrap(
+                                  alignment: WrapAlignment.spaceBetween,
+                                  spacing: 8,
+                                  runSpacing: 4,
                                   children: [
-                                    Expanded(
-                                      child: Text(
-                                        m.title,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Color(0xFF1B2A4A)),
-                                      ),
+                                    Text(
+                                      m.title,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF1B2A4A)),
                                     ),
                                     if (m.estimatedCost > 0)
                                       Text(
-                                        'Chi phí ước tính: ${_currency.format(m.estimatedCost)}',
-                                        style: const TextStyle(color: Color(0xFF2ECC71), fontWeight: FontWeight.bold, fontSize: 13),
+                                        'Ước tính: ${_currency.format(m.estimatedCost)}',
+                                        style: const TextStyle(color: Color(0xFF2ECC71), fontWeight: FontWeight.bold, fontSize: 12),
                                       ),
                                   ],
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 6),
                                 ...m.tasks.map((task) => Padding(
                                       padding: const EdgeInsets.only(bottom: 3),
                                       child: Row(
@@ -746,16 +786,15 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                               ],
                             ),
                           ),
-                          const SizedBox(width: 12),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.blue, size: 20),
+                                icon: const Icon(Icons.edit, color: Colors.blue, size: 18),
                                 onPressed: () => _showMilestoneEditDialog(m),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 18),
                                 onPressed: () => _confirmDelete('mốc bảo dưỡng', () {
                                   provider.deleteMilestone(m.id);
                                 }),
@@ -782,8 +821,9 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(item == null ? 'Thêm Mốc Lịch Bảo Dưỡng' : 'Chỉnh Sửa Mốc Bảo Dưỡng'),
-        content: SizedBox(
-          width: 500,
+        content: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
+          width: double.maxFinite,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -846,8 +886,11 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12,
+              runSpacing: 8,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -890,39 +933,39 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                             borderRadius: BorderRadius.circular(8),
                             child: Image.network(
                               n.imageUrl,
-                              width: 80,
-                              height: 60,
+                              width: 70,
+                              height: 55,
                               fit: BoxFit.cover,
                               errorBuilder: (ctx, err, stack) => Container(
-                                width: 80,
-                                height: 60,
+                                width: 70,
+                                height: 55,
                                 color: Colors.grey.shade300,
                                 child: const Icon(Icons.image_not_supported, color: Colors.grey),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   n.title,
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF1B2A4A)),
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF1B2A4A)),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(n.summary, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, color: Colors.black54)),
-                                const SizedBox(height: 4),
-                                Text('Ngày đăng: ${n.date}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                                const SizedBox(height: 2),
+                                Text(n.summary, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11, color: Colors.black54)),
+                                const SizedBox(height: 2),
+                                Text('Ngày đăng: ${n.date}', style: const TextStyle(fontSize: 10, color: Colors.grey)),
                               ],
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue, size: 20),
+                            icon: const Icon(Icons.edit, color: Colors.blue, size: 18),
                             onPressed: () => _showNewsEditDialog(n),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                            icon: const Icon(Icons.delete_outline, color: Colors.red, size: 18),
                             onPressed: () => _confirmDelete('bài tin tức', () {
                               provider.deleteNews(n.id);
                             }),
@@ -947,8 +990,9 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(item == null ? 'Đăng Bài Tin Mới' : 'Chỉnh Sửa Bài Tin'),
-        content: SizedBox(
-          width: 480,
+        content: Container(
+          constraints: const BoxConstraints(maxWidth: 480),
+          width: double.maxFinite,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -1002,18 +1046,21 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12,
+              runSpacing: 8,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Quà Tặng & Voucher Đổi Điểm Thân Thiết',
+                      'Quà Tặng & Voucher Đổi Điểm',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1B2A4A)),
                     ),
                     Text(
-                      'Khách hàng sẽ nhìn thấy và dùng điểm để đổi các voucher này trong mục "Đổi quà".',
+                      'Hiển thị trong mục "Đổi quà" của khách hàng.',
                       style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                     ),
                   ],
@@ -1039,39 +1086,40 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     elevation: 1,
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(14),
                       child: Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: Colors.amber.shade100,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Icon(Icons.card_giftcard, color: Colors.amber.shade800),
+                            child: Icon(Icons.card_giftcard, color: Colors.amber.shade800, size: 20),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
+                                Wrap(
+                                  alignment: WrapAlignment.spaceBetween,
+                                  spacing: 8,
+                                  runSpacing: 4,
                                   children: [
-                                    Expanded(
-                                      child: Text(
-                                        v.title,
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF1B2A4A)),
-                                      ),
+                                    Text(
+                                      v.title,
+                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF1B2A4A)),
                                     ),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                       decoration: BoxDecoration(
                                         color: Colors.amber.shade700,
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: Text(
                                         '${v.pointsRequired} ĐIỂM',
-                                        style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ],
@@ -1079,7 +1127,8 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                                 const SizedBox(height: 4),
                                 Text(v.description, style: const TextStyle(fontSize: 12, color: Colors.black54)),
                                 const SizedBox(height: 4),
-                                Row(
+                                Wrap(
+                                  spacing: 8,
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
@@ -1089,22 +1138,26 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
                                       ),
                                       child: Text(v.category, style: const TextStyle(fontSize: 10, color: Colors.black54)),
                                     ),
-                                    const SizedBox(width: 8),
                                     Text('Hạn dùng: ${v.validUntil}', style: const TextStyle(fontSize: 11, color: Colors.grey)),
                                   ],
                                 ),
                               ],
                             ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue, size: 20),
-                            onPressed: () => _showVoucherEditDialog(v),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
-                            onPressed: () => _confirmDelete('voucher', () {
-                              provider.deleteVoucher(v.id);
-                            }),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.edit, color: Colors.blue, size: 18),
+                                onPressed: () => _showVoucherEditDialog(v),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline, color: Colors.red, size: 18),
+                                onPressed: () => _confirmDelete('voucher', () {
+                                  provider.deleteVoucher(v.id);
+                                }),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -1127,8 +1180,9 @@ class _AdminStoreContentViewState extends State<AdminStoreContentView> with Sing
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(item == null ? 'Thêm Voucher Đổi Quà' : 'Chỉnh Sửa Voucher'),
-        content: SizedBox(
-          width: 480,
+        content: Container(
+          constraints: const BoxConstraints(maxWidth: 480),
+          width: double.maxFinite,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,

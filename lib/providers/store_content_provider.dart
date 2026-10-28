@@ -240,3 +240,4 @@ class StoreContentProvider extends ChangeNotifier {
     await prefs.remove(_keyVouchers);
   }
 }
+

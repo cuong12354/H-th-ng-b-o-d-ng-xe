@@ -441,9 +441,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: 'Hóa đơn dịch vụ',
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const InvoiceScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const InvoiceScreen()),
                   ),
                 ),
               ),
@@ -505,7 +503,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const SizedBox(
                   height: 100,
                   child: Center(
-                    child: Text('Chưa có tin tức nào.', style: TextStyle(color: Colors.white60)),
+                    child: Text(
+                      'Chưa có tin tức nào.',
+                      style: TextStyle(color: Colors.white60),
+                    ),
                   ),
                 );
               }
@@ -1171,9 +1172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: 'Hóa đơn & Biên lai\n(Đã thanh toán tại quầy)',
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const InvoiceScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const InvoiceScreen()),
                 ),
               ),
             ),
@@ -1387,7 +1386,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: _buildDarkFeatureCard(
                   icon: Icons.album_outlined,
                   title: 'Thông tin phụ tùng',
-                  onTap: () => _showPartsListDialog(initialCategory: 'SPARE_PART'),
+                  onTap: () =>
+                      _showPartsListDialog(initialCategory: 'SPARE_PART'),
                 ),
               ),
             ],
@@ -1399,7 +1399,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: _buildDarkFeatureCard(
                   icon: Icons.sports_motorsports_outlined,
                   title: 'Thông tin phụ kiện',
-                  onTap: () => _showPartsListDialog(initialCategory: 'ACCESSORY'),
+                  onTap: () =>
+                      _showPartsListDialog(initialCategory: 'ACCESSORY'),
                 ),
               ),
               const SizedBox(width: 12),
@@ -1704,7 +1705,9 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, storeContent, _) {
             var vouchers = storeContent.vouchers;
             if (_selectedRewardFilter != 'Tất cả') {
-              vouchers = vouchers.where((v) => v.category == _selectedRewardFilter).toList();
+              vouchers = vouchers
+                  .where((v) => v.category == _selectedRewardFilter)
+                  .toList();
             }
             if (vouchers.isEmpty) {
               return const Padding(
@@ -1718,10 +1721,14 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
             return Column(
-              children: vouchers.map((v) => _buildVoucherCard(
-                title: v.title,
-                points: '${v.pointsRequired} điểm',
-              )).toList(),
+              children: vouchers
+                  .map(
+                    (v) => _buildVoucherCard(
+                      title: v.title,
+                      points: '${v.pointsRequired} điểm',
+                    ),
+                  )
+                  .toList(),
             );
           },
         ),
@@ -2156,7 +2163,10 @@ class _HomeScreenState extends State<HomeScreen> {
   // POPUP DIALOGS & ACTIONS
   // =========================================================================
   void _showGarageLocationDialog() {
-    final storeInfo = Provider.of<StoreContentProvider>(context, listen: false).storeInfo;
+    final storeInfo = Provider.of<StoreContentProvider>(
+      context,
+      listen: false,
+    ).storeInfo;
 
     showDialog(
       context: context,
@@ -2168,7 +2178,11 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(width: 8),
             Text(
               'Nhà phân phối / Gara ủy quyền',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -2197,7 +2211,11 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 6),
             Text(
               '🚨 Cứu hộ 24/7: ${storeInfo.rescueHotline}',
-              style: const TextStyle(color: Color(0xFF2ECC71), fontWeight: FontWeight.bold, fontSize: 13),
+              style: const TextStyle(
+                color: Color(0xFF2ECC71),
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
             ),
             const SizedBox(height: 6),
             Text(
@@ -2228,7 +2246,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showSupportHotlineDialog() {
-    final storeInfo = Provider.of<StoreContentProvider>(context, listen: false).storeInfo;
+    final storeInfo = Provider.of<StoreContentProvider>(
+      context,
+      listen: false,
+    ).storeInfo;
 
     showDialog(
       context: context,
@@ -2240,7 +2261,11 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(width: 8),
             Text(
               'Hỗ trợ & Cứu hộ 24/7',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -2440,7 +2465,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     return Container(
                       margin: const EdgeInsets.only(bottom: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF14161E),
                         borderRadius: BorderRadius.circular(8),
@@ -2479,19 +2507,27 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: TextButton.icon(
                                 style: TextButton.styleFrom(
                                   foregroundColor: const Color(0xFF2ECC71),
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
                                 ),
                                 icon: const Icon(Icons.receipt_long, size: 15),
                                 label: const Text(
                                   'Xem hóa đơn điện tử',
-                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 onPressed: () {
                                   Navigator.pop(ctx);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => InvoiceScreen(initialAppointmentId: item['id']),
+                                      builder: (_) => InvoiceScreen(
+                                        initialAppointmentId: item['id'],
+                                      ),
                                     ),
                                   );
                                 },
@@ -2505,18 +2541,23 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           TextButton.icon(
-            icon: const Icon(Icons.receipt_long, size: 16, color: Color(0xFFE60012)),
+            icon: const Icon(
+              Icons.receipt_long,
+              size: 16,
+              color: Color(0xFFE60012),
+            ),
             label: const Text(
               'Tất cả hóa đơn',
-              style: TextStyle(color: Color(0xFFE60012), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Color(0xFFE60012),
+                fontWeight: FontWeight.bold,
+              ),
             ),
             onPressed: () {
               Navigator.pop(ctx);
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => const InvoiceScreen(),
-                ),
+                MaterialPageRoute(builder: (_) => const InvoiceScreen()),
               );
             },
           ),
@@ -2624,7 +2665,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showCampaignDialog() {
-    final storeContent = Provider.of<StoreContentProvider>(context, listen: false);
+    final storeContent = Provider.of<StoreContentProvider>(
+      context,
+      listen: false,
+    );
     final campaigns = storeContent.campaigns;
 
     showDialog(
@@ -2637,7 +2681,11 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(width: 8),
             Text(
               'Chiến dịch dịch vụ & Ưu đãi',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -2647,13 +2695,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ? const Padding(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Center(
-                    child: Text('Hiện chưa có chiến dịch khuyến mãi nào.', style: TextStyle(color: Colors.white70)),
+                    child: Text(
+                      'Hiện chưa có chiến dịch khuyến mãi nào.',
+                      style: TextStyle(color: Colors.white70),
+                    ),
                   ),
                 )
               : ListView.separated(
                   shrinkWrap: true,
                   itemCount: campaigns.length,
-                  separatorBuilder: (ctx, i) => const Divider(color: Colors.white12, height: 20),
+                  separatorBuilder: (ctx, i) =>
+                      const Divider(color: Colors.white12, height: 20),
                   itemBuilder: (context, idx) {
                     final c = campaigns[idx];
                     return Column(
@@ -2673,14 +2725,21 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             if (c.discountPercent > 0)
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFE60012),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
                                   '-${c.discountPercent}%',
-                                  style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                           ],
@@ -2689,21 +2748,31 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 6),
                           Text(
                             c.highlight,
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
                           ),
                         ],
                         if (c.description.isNotEmpty) ...[
                           const SizedBox(height: 4),
                           Text(
                             c.description,
-                            style: const TextStyle(color: Colors.white70, fontSize: 12),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                         if (c.validUntil.isNotEmpty) ...[
                           const SizedBox(height: 6),
                           Text(
                             '⏰ Hạn áp dụng: ${c.validUntil}',
-                            style: const TextStyle(color: Color(0xFF8E92A0), fontSize: 11),
+                            style: const TextStyle(
+                              color: Color(0xFF8E92A0),
+                              fontSize: 11,
+                            ),
                           ),
                         ],
                       ],
@@ -2733,7 +2802,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showPrepaidPackagesDialog() {
-    final storeContent = Provider.of<StoreContentProvider>(context, listen: false);
+    final storeContent = Provider.of<StoreContentProvider>(
+      context,
+      listen: false,
+    );
     final packages = storeContent.packages;
     final currency = NumberFormat.currency(locale: 'vi_VN', symbol: 'đ');
 
@@ -2743,11 +2815,19 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF1E212B),
         title: Row(
           children: const [
-            Icon(Icons.confirmation_number_outlined, color: Color(0xFFE60012), size: 22),
+            Icon(
+              Icons.confirmation_number_outlined,
+              color: Color(0xFFE60012),
+              size: 22,
+            ),
             SizedBox(width: 8),
             Text(
               'Gói bảo dưỡng trả trước',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -2757,13 +2837,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ? const Padding(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Center(
-                    child: Text('Chưa có gói bảo dưỡng trả trước nào.', style: TextStyle(color: Colors.white70)),
+                    child: Text(
+                      'Chưa có gói bảo dưỡng trả trước nào.',
+                      style: TextStyle(color: Colors.white70),
+                    ),
                   ),
                 )
               : ListView.separated(
                   shrinkWrap: true,
                   itemCount: packages.length,
-                  separatorBuilder: (ctx, i) => const Divider(color: Colors.white12, height: 20),
+                  separatorBuilder: (ctx, i) =>
+                      const Divider(color: Colors.white12, height: 20),
                   itemBuilder: (context, idx) {
                     final pkg = packages[idx];
                     return Column(
@@ -2794,33 +2878,52 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (pkg.savings.isNotEmpty) ...[
                           const SizedBox(height: 4),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF2ECC71).withValues(alpha: 0.15),
+                              color: const Color(0xFF2ECC71)
+                                  .withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
                               pkg.savings,
-                              style: const TextStyle(color: Color(0xFF2ECC71), fontSize: 11, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                color: Color(0xFF2ECC71),
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
                         const SizedBox(height: 6),
-                        ...pkg.benefits.map((b) => Padding(
-                              padding: const EdgeInsets.only(bottom: 3),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('✔ ', style: TextStyle(color: Color(0xFF2ECC71), fontSize: 11)),
-                                  Expanded(
-                                    child: Text(
-                                      b,
-                                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                        ...pkg.benefits.map(
+                          (b) => Padding(
+                            padding: const EdgeInsets.only(bottom: 3),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '✔ ',
+                                  style: TextStyle(
+                                    color: Color(0xFF2ECC71),
+                                    fontSize: 11,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    b,
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
                                     ),
                                   ),
-                                ],
-                              ),
-                            )),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     );
                   },
@@ -2938,18 +3041,29 @@ class _HomeScreenState extends State<HomeScreen> {
               final spareParts = partProvider.spareParts;
               final accessories = partProvider.accessories;
 
-              var displayedList = currentCategory == 'SPARE_PART' ? spareParts : accessories;
+              var displayedList = currentCategory == 'SPARE_PART'
+                  ? spareParts
+                  : accessories;
               if (searchQuery.isNotEmpty) {
                 final q = searchQuery.toLowerCase();
                 displayedList = displayedList
-                    .where((p) => p.name.toLowerCase().contains(q) || p.description.toLowerCase().contains(q))
+                    .where(
+                      (p) =>
+                          p.name.toLowerCase().contains(q) ||
+                          p.description.toLowerCase().contains(q),
+                    )
                     .toList();
               }
 
               return Dialog(
                 backgroundColor: const Color(0xFF1E212B),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                insetPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 24,
+                ),
                 child: Container(
                   width: double.maxFinite,
                   constraints: const BoxConstraints(maxHeight: 650),
@@ -2990,11 +3104,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 Text(
-                                  isAdmin ? '★ Chế độ Quản trị viên (Admin)' : 'Bảng giá niêm yết chính thức',
+                                  isAdmin
+                                      ? '★ Chế độ Quản trị viên (Admin)'
+                                      : 'Bảng giá niêm yết chính thức',
                                   style: TextStyle(
-                                    color: isAdmin ? const Color(0xFF2ECC71) : Colors.white60,
+                                    color: isAdmin
+                                        ? const Color(0xFF2ECC71)
+                                        : Colors.white60,
                                     fontSize: 11,
-                                    fontWeight: isAdmin ? FontWeight.bold : FontWeight.normal,
+                                    fontWeight: isAdmin
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
                                   ),
                                 ),
                               ],
@@ -3005,13 +3125,27 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF2ECC71),
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
                                 minimumSize: Size.zero,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                               icon: const Icon(Icons.add, size: 16),
-                              label: const Text('Thêm mới', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                              onPressed: () => _showAddEditPartDialog(context, defaultCategory: currentCategory),
+                              label: const Text(
+                                'Thêm mới',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onPressed: () => _showAddEditPartDialog(
+                                context,
+                                defaultCategory: currentCategory,
+                              ),
                             ),
                         ],
                       ),
@@ -3029,10 +3163,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Expanded(
                               child: InkWell(
-                                onTap: () => setDlgState(() => currentCategory = 'SPARE_PART'),
+                                onTap: () => setDlgState(
+                                  () => currentCategory = 'SPARE_PART',
+                                ),
                                 borderRadius: BorderRadius.circular(8),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: currentCategory == 'SPARE_PART'
                                         ? const Color(0xFFE60012)
@@ -3042,13 +3180,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Icon(Icons.build, size: 14, color: Colors.white),
+                                      const Icon(
+                                        Icons.build,
+                                        size: 14,
+                                        color: Colors.white,
+                                      ),
                                       const SizedBox(width: 6),
                                       Text(
                                         'Phụ tùng (${spareParts.length})',
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontWeight: currentCategory == 'SPARE_PART'
+                                          fontWeight:
+                                              currentCategory == 'SPARE_PART'
                                               ? FontWeight.bold
                                               : FontWeight.normal,
                                           fontSize: 12,
@@ -3061,10 +3204,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             Expanded(
                               child: InkWell(
-                                onTap: () => setDlgState(() => currentCategory = 'ACCESSORY'),
+                                onTap: () => setDlgState(
+                                  () => currentCategory = 'ACCESSORY',
+                                ),
                                 borderRadius: BorderRadius.circular(8),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: currentCategory == 'ACCESSORY'
                                         ? const Color(0xFFE60012)
@@ -3074,13 +3221,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Icon(Icons.shield, size: 14, color: Colors.white),
+                                      const Icon(
+                                        Icons.shield,
+                                        size: 14,
+                                        color: Colors.white,
+                                      ),
                                       const SizedBox(width: 6),
                                       Text(
                                         'Phụ kiện (${accessories.length})',
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontWeight: currentCategory == 'ACCESSORY'
+                                          fontWeight:
+                                              currentCategory == 'ACCESSORY'
                                               ? FontWeight.bold
                                               : FontWeight.normal,
                                           fontSize: 12,
@@ -3098,23 +3250,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       // Search input
                       TextField(
-                        style: const TextStyle(color: Colors.white, fontSize: 13),
-                        onChanged: (val) => setDlgState(() => searchQuery = val),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                        onChanged: (val) =>
+                            setDlgState(() => searchQuery = val),
                         decoration: InputDecoration(
-                          hintText: 'Tìm kiếm ${currentCategory == 'SPARE_PART' ? 'phụ tùng' : 'phụ kiện'}...',
-                          hintStyle: const TextStyle(color: Color(0xFF8E92A0), fontSize: 12),
-                          prefixIcon: const Icon(Icons.search, color: Color(0xFF8E92A0), size: 18),
+                          hintText:
+                              'Tìm kiếm ${currentCategory == 'SPARE_PART' ? 'phụ tùng' : 'phụ kiện'}...',
+                          hintStyle: const TextStyle(
+                            color: Color(0xFF8E92A0),
+                            fontSize: 12,
+                          ),
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Color(0xFF8E92A0),
+                            size: 18,
+                          ),
                           filled: true,
                           fillColor: const Color(0xFF14161E),
                           isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: Color(0xFF2C303E)),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF2C303E),
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: Color(0xFF2C303E)),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF2C303E),
+                            ),
                           ),
                         ),
                       ),
@@ -3137,7 +3308,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                     const SizedBox(height: 8),
                                     Text(
                                       'Không có ${currentCategory == 'SPARE_PART' ? 'phụ tùng' : 'phụ kiện'} nào phù hợp.',
-                                      style: const TextStyle(color: Color(0xFF8E92A0), fontSize: 13),
+                                      style: const TextStyle(
+                                        color: Color(0xFF8E92A0),
+                                        fontSize: 13,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -3145,31 +3319,45 @@ class _HomeScreenState extends State<HomeScreen> {
                             : ListView.separated(
                                 shrinkWrap: true,
                                 itemCount: displayedList.length,
-                                separatorBuilder: (context, index) => const Divider(color: Color(0xFF2C303E), height: 1),
+                                separatorBuilder: (context, index) =>
+                                    const Divider(
+                                      color: Color(0xFF2C303E),
+                                      height: 1,
+                                    ),
                                 itemBuilder: (context, idx) {
                                   final p = displayedList[idx];
                                   final inStock = p.stockQuantity > 0;
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
                                     child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.all(8),
                                           decoration: BoxDecoration(
                                             color: const Color(0xFF14161E),
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
                                           child: Icon(
-                                            p.isAccessory ? Icons.sports_motorsports : Icons.settings,
-                                            color: p.isAccessory ? Colors.amber : const Color(0xFF3498DB),
+                                            p.isAccessory
+                                                ? Icons.sports_motorsports
+                                                : Icons.settings,
+                                            color: p.isAccessory
+                                                ? Colors.amber
+                                                : const Color(0xFF3498DB),
                                             size: 20,
                                           ),
                                         ),
                                         const SizedBox(width: 10),
                                         Expanded(
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 p.name,
@@ -3183,26 +3371,46 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 const SizedBox(height: 2),
                                                 Text(
                                                   p.description,
-                                                  style: const TextStyle(color: Colors.white60, fontSize: 11),
+                                                  style: const TextStyle(
+                                                    color: Colors.white60,
+                                                    fontSize: 11,
+                                                  ),
                                                 ),
                                               ],
                                               const SizedBox(height: 4),
                                               Row(
                                                 children: [
                                                   Container(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 6,
+                                                          vertical: 2,
+                                                        ),
                                                     decoration: BoxDecoration(
                                                       color: inStock
-                                                          ? const Color(0xFF2ECC71).withAlpha(30)
-                                                          : Colors.red.withAlpha(30),
-                                                      borderRadius: BorderRadius.circular(4),
+                                                          ? const Color(
+                                                              0xFF2ECC71,
+                                                            ).withAlpha(30)
+                                                          : Colors.red
+                                                                .withAlpha(30),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            4,
+                                                          ),
                                                     ),
                                                     child: Text(
-                                                      inStock ? 'Tồn kho: ${p.stockQuantity}' : 'Hết hàng',
+                                                      inStock
+                                                          ? 'Tồn kho: ${p.stockQuantity}'
+                                                          : 'Hết hàng',
                                                       style: TextStyle(
-                                                        color: inStock ? const Color(0xFF2ECC71) : Colors.red,
+                                                        color: inStock
+                                                            ? const Color(
+                                                                0xFF2ECC71,
+                                                              )
+                                                            : Colors.red,
                                                         fontSize: 10,
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                   ),
@@ -3213,7 +3421,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         const SizedBox(width: 8),
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
                                           children: [
                                             Text(
                                               currency.format(p.price),
@@ -3229,26 +3438,56 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   InkWell(
-                                                    onTap: () => _showAddEditPartDialog(context, part: p),
+                                                    onTap: () =>
+                                                        _showAddEditPartDialog(
+                                                          context,
+                                                          part: p,
+                                                        ),
                                                     child: Container(
-                                                      padding: const EdgeInsets.all(5),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                            5,
+                                                          ),
                                                       decoration: BoxDecoration(
-                                                        color: Colors.blue.withAlpha(30),
-                                                        borderRadius: BorderRadius.circular(4),
+                                                        color: Colors.blue
+                                                            .withAlpha(30),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              4,
+                                                            ),
                                                       ),
-                                                      child: const Icon(Icons.edit, color: Colors.blue, size: 16),
+                                                      child: const Icon(
+                                                        Icons.edit,
+                                                        color: Colors.blue,
+                                                        size: 16,
+                                                      ),
                                                     ),
                                                   ),
                                                   const SizedBox(width: 6),
                                                   InkWell(
-                                                    onTap: () => _confirmDeletePart(context, p),
+                                                    onTap: () =>
+                                                        _confirmDeletePart(
+                                                          context,
+                                                          p,
+                                                        ),
                                                     child: Container(
-                                                      padding: const EdgeInsets.all(5),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                            5,
+                                                          ),
                                                       decoration: BoxDecoration(
-                                                        color: Colors.red.withAlpha(30),
-                                                        borderRadius: BorderRadius.circular(4),
+                                                        color: Colors.red
+                                                            .withAlpha(30),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              4,
+                                                            ),
                                                       ),
-                                                      child: const Icon(Icons.delete, color: Colors.red, size: 16),
+                                                      child: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.red,
+                                                        size: 16,
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -3270,7 +3509,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           TextButton(
                             onPressed: () => Navigator.pop(ctx),
-                            child: const Text('Đóng', style: TextStyle(color: Colors.white70)),
+                            child: const Text(
+                              'Đóng',
+                              style: TextStyle(color: Colors.white70),
+                            ),
                           ),
                           if (!isAdmin) ...[
                             const SizedBox(width: 8),
@@ -3278,7 +3520,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFFE60012),
                                 foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                               onPressed: () {
                                 Navigator.pop(ctx);
@@ -3300,12 +3544,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showAddEditPartDialog(BuildContext context, {PartModel? part, String defaultCategory = 'SPARE_PART'}) {
+  void _showAddEditPartDialog(
+    BuildContext context, {
+    PartModel? part,
+    String defaultCategory = 'SPARE_PART',
+  }) {
     final isEditing = part != null;
     final nameCtrl = TextEditingController(text: part?.name ?? '');
     final descCtrl = TextEditingController(text: part?.description ?? '');
-    final priceCtrl = TextEditingController(text: part != null ? part.price.toStringAsFixed(0) : '');
-    final qtyCtrl = TextEditingController(text: part != null ? part.stockQuantity.toString() : '10');
+    final priceCtrl = TextEditingController(
+      text: part != null ? part.price.toStringAsFixed(0) : '',
+    );
+    final qtyCtrl = TextEditingController(
+      text: part != null ? part.stockQuantity.toString() : '10',
+    );
     String selectedCategory = part?.category ?? defaultCategory;
 
     showDialog(
@@ -3314,17 +3566,26 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, setInnerState) {
           return AlertDialog(
             backgroundColor: const Color(0xFF1E212B),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             title: Text(
               isEditing ? 'Chỉnh sửa: ${part.name}' : 'Thêm mới vào kho',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Phân loại danh mục:', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                  const Text(
+                    'Phân loại danh mục:',
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  ),
                   const SizedBox(height: 6),
                   DropdownButtonFormField<String>(
                     value: selectedCategory,
@@ -3333,21 +3594,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: const Color(0xFF14161E),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 10,
+                      ),
                     ),
                     items: const [
                       DropdownMenuItem(
                         value: 'SPARE_PART',
-                        child: Text('⚙️ Phụ tùng (Thay thế / Kỹ thuật)', style: TextStyle(color: Colors.white)),
+                        child: Text(
+                          '⚙️ Phụ tùng (Thay thế / Kỹ thuật)',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                       DropdownMenuItem(
                         value: 'ACCESSORY',
-                        child: Text('🛡️ Phụ kiện (Đồ chơi / Tiện ích)', style: TextStyle(color: Colors.white)),
+                        child: Text(
+                          '🛡️ Phụ kiện (Đồ chơi / Tiện ích)',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                     onChanged: (val) {
-                      if (val != null) setInnerState(() => selectedCategory = val);
+                      if (val != null)
+                        setInnerState(() => selectedCategory = val);
                     },
                   ),
                   const SizedBox(height: 12),
@@ -3359,7 +3632,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       labelStyle: const TextStyle(color: Colors.white70),
                       filled: true,
                       fillColor: const Color(0xFF14161E),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -3371,7 +3646,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       labelStyle: const TextStyle(color: Colors.white70),
                       filled: true,
                       fillColor: const Color(0xFF14161E),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -3387,7 +3664,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             labelStyle: const TextStyle(color: Colors.white70),
                             filled: true,
                             fillColor: const Color(0xFF14161E),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                         ),
                       ),
@@ -3402,7 +3681,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             labelStyle: const TextStyle(color: Colors.white70),
                             filled: true,
                             fillColor: const Color(0xFF14161E),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                         ),
                       ),
@@ -3414,19 +3695,27 @@ class _HomeScreenState extends State<HomeScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(dlgCtx),
-                child: const Text('Hủy', style: TextStyle(color: Colors.white70)),
+                child: const Text(
+                  'Hủy',
+                  style: TextStyle(color: Colors.white70),
+                ),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2ECC71),
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: () async {
                   if (nameCtrl.text.trim().isEmpty) return;
                   final price = double.tryParse(priceCtrl.text) ?? 0.0;
                   final qty = int.tryParse(qtyCtrl.text) ?? 0;
-                  final prov = Provider.of<PartProvider>(context, listen: false);
+                  final prov = Provider.of<PartProvider>(
+                    context,
+                    listen: false,
+                  );
 
                   bool ok;
                   if (isEditing) {
@@ -3452,10 +3741,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        backgroundColor: ok ? const Color(0xFF2ECC71) : Colors.red,
-                        content: Text(ok
-                            ? (isEditing ? 'Cập nhật thành công!' : 'Thêm mới thành công!')
-                            : 'Thao tác thất bại! Vui lòng thử lại.'),
+                        backgroundColor: ok
+                            ? const Color(0xFF2ECC71)
+                            : Colors.red,
+                        content: Text(
+                          ok
+                              ? (isEditing
+                                    ? 'Cập nhật thành công!'
+                                    : 'Thêm mới thành công!')
+                              : 'Thao tác thất bại! Vui lòng thử lại.',
+                        ),
                       ),
                     );
                   }
@@ -3474,7 +3769,10 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (dlgCtx) => AlertDialog(
         backgroundColor: const Color(0xFF1E212B),
-        title: const Text('Xác nhận xóa', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Xác nhận xóa',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         content: Text(
           'Bạn có chắc chắn muốn xóa "${part.name}" khỏi danh mục không?',
           style: const TextStyle(color: Colors.white70),
@@ -3488,16 +3786,23 @@ class _HomeScreenState extends State<HomeScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFE60012),
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             onPressed: () async {
-              final ok = await Provider.of<PartProvider>(context, listen: false).deletePart(part.id);
+              final ok = await Provider.of<PartProvider>(
+                context,
+                listen: false,
+              ).deletePart(part.id);
               if (dlgCtx.mounted) Navigator.pop(dlgCtx);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     backgroundColor: ok ? const Color(0xFF2ECC71) : Colors.red,
-                    content: Text(ok ? 'Đã xóa ${part.name} thành công!' : 'Xóa thất bại!'),
+                    content: Text(
+                      ok ? 'Đã xóa ${part.name} thành công!' : 'Xóa thất bại!',
+                    ),
                   ),
                 );
               }
@@ -3510,7 +3815,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showMaintenanceScheduleDialog() {
-    final storeContent = Provider.of<StoreContentProvider>(context, listen: false);
+    final storeContent = Provider.of<StoreContentProvider>(
+      context,
+      listen: false,
+    );
     final milestones = storeContent.milestones;
     final currency = NumberFormat.currency(locale: 'vi_VN', symbol: 'đ');
 
@@ -3524,7 +3832,11 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(width: 8),
             Text(
               'Lịch trình bảo dưỡng khuyến nghị',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -3534,13 +3846,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ? const Padding(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Center(
-                    child: Text('Chưa có lịch trình bảo dưỡng nào.', style: TextStyle(color: Colors.white70)),
+                    child: Text(
+                      'Chưa có lịch trình bảo dưỡng nào.',
+                      style: TextStyle(color: Colors.white70),
+                    ),
                   ),
                 )
               : ListView.separated(
                   shrinkWrap: true,
                   itemCount: milestones.length,
-                  separatorBuilder: (ctx, i) => const Divider(color: Colors.white12, height: 16),
+                  separatorBuilder: (ctx, i) =>
+                      const Divider(color: Colors.white12, height: 16),
                   itemBuilder: (context, idx) {
                     final m = milestones[idx];
                     return Column(
@@ -3549,11 +3865,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFE60012).withValues(alpha: 0.2),
+                                color: const Color(0xFFE60012)
+                                    .withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: const Color(0xFFE60012)),
+                                border: Border.all(
+                                  color: const Color(0xFFE60012),
+                                ),
                               ),
                               child: Text(
                                 '${NumberFormat('#,###').format(m.km)} KM',
@@ -3568,32 +3890,48 @@ class _HomeScreenState extends State<HomeScreen> {
                             Expanded(
                               child: Text(
                                 m.title,
-                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
                               ),
                             ),
                             if (m.estimatedCost > 0)
                               Text(
                                 currency.format(m.estimatedCost),
-                                style: const TextStyle(color: Color(0xFF2ECC71), fontWeight: FontWeight.bold, fontSize: 12),
+                                style: const TextStyle(
+                                  color: Color(0xFF2ECC71),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
                               ),
                           ],
                         ),
                         const SizedBox(height: 6),
-                        ...m.tasks.map((task) => Padding(
-                              padding: const EdgeInsets.only(left: 4, bottom: 3),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('• ', style: TextStyle(color: Color(0xFFE60012))),
-                                  Expanded(
-                                    child: Text(
-                                      task,
-                                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                        ...m.tasks.map(
+                          (task) => Padding(
+                            padding: const EdgeInsets.only(left: 4, bottom: 3),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '• ',
+                                  style: TextStyle(color: Color(0xFFE60012)),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    task,
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
                                     ),
                                   ),
-                                ],
-                              ),
-                            )),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     );
                   },
@@ -3819,13 +4157,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     title: const Text(
                       'Hóa đơn & Lịch sử thanh toán',
-                      style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     subtitle: const Text(
                       'Xem hóa đơn thanh toán tại cửa hàng và online',
                       style: TextStyle(color: Color(0xFF8E92A0), fontSize: 12),
                     ),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.white54),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 14,
+                      color: Colors.white54,
+                    ),
                     onTap: () {
                       Navigator.pop(ctx);
                       Navigator.push(
@@ -3870,7 +4216,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor: Colors.red.withAlpha(20),
-                            side: const BorderSide(color: Color(0xFFE60012), width: 1.5),
+                            side: const BorderSide(
+                              color: Color(0xFFE60012),
+                              width: 1.5,
+                            ),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -3907,7 +4256,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 10),
                   Center(
                     child: TextButton.icon(
-                      style: TextButton.styleFrom(foregroundColor: const Color(0xFF8E92A0)),
+                      style: TextButton.styleFrom(
+                        foregroundColor: const Color(0xFF8E92A0),
+                      ),
                       icon: const Icon(Icons.dns_outlined, size: 14),
                       label: const Text(
                         'Cấu hình kết nối máy chủ API',

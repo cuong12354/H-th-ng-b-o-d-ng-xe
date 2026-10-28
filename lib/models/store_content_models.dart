@@ -62,7 +62,8 @@ class StoreInfo {
 
   factory StoreInfo.fromJson(Map<String, dynamic> json) {
     return StoreInfo(
-      garageName: json['garageName'] ?? 'GARA TIỆM XE MÁY & Ô TÔ BLACKMYTH AUTO',
+      garageName:
+          json['garageName'] ?? 'GARA TIỆM XE MÁY & Ô TÔ BLACKMYTH AUTO',
       address: json['address'] ?? '68 Võ Văn Ngân, TP. Thủ Đức',
       hotline: json['hotline'] ?? '1900 6868',
       rescueHotline: json['rescueHotline'] ?? '0909 686 868',
@@ -147,7 +148,8 @@ class CampaignItem {
         id: 'c2',
         title: '⚡ Tri ân khách hàng thân thiết:',
         highlight: 'Tặng 01 lần rửa xe bọt tuyết & khử khuẩn nano bạc.',
-        description: 'Áp dụng cho mọi hóa đơn bảo dưỡng định kỳ trên 1.000.000 đ.',
+        description:
+            'Áp dụng cho mọi hóa đơn bảo dưỡng định kỳ trên 1.000.000 đ.',
         discountPercent: 15,
         validUntil: 'Hàng tháng',
       ),
@@ -181,7 +183,11 @@ class PrepaidPackageItem {
       name: json['name'] ?? '',
       price: (json['price'] ?? 0).toDouble(),
       savings: json['savings'] ?? '',
-      benefits: (json['benefits'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      benefits:
+          (json['benefits'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
       durationMonths: json['durationMonths'] ?? 12,
       isActive: json['isActive'] ?? true,
     );
@@ -250,7 +256,11 @@ class MaintenanceMilestone {
       id: json['id'] ?? DateTime.now().millisecondsSinceEpoch.toString(),
       km: json['km'] ?? 0,
       title: json['title'] ?? '',
-      tasks: (json['tasks'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      tasks:
+          (json['tasks'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
       estimatedCost: (json['estimatedCost'] ?? 0).toDouble(),
     );
   }
@@ -425,7 +435,8 @@ class RewardVoucherItem {
         title: 'Voucher Dịch Vụ 1.000.000 VNĐ (Loyalty)',
         pointsRequired: 500,
         category: 'Voucher dịch vụ',
-        description: 'Áp dụng giảm trừ trực tiếp cho hóa đơn dịch vụ từ 2.000.000 đ.',
+        description:
+            'Áp dụng giảm trừ trực tiếp cho hóa đơn dịch vụ từ 2.000.000 đ.',
         validUntil: '02/2027',
       ),
       RewardVoucherItem(
@@ -433,7 +444,8 @@ class RewardVoucherItem {
         title: 'Voucher Dịch Vụ 500.000 VNĐ (Loyalty)',
         pointsRequired: 250,
         category: 'Voucher dịch vụ',
-        description: 'Áp dụng cho mọi hóa đơn bảo dưỡng hoặc thay thế phụ tùng.',
+        description:
+            'Áp dụng cho mọi hóa đơn bảo dưỡng hoặc thay thế phụ tùng.',
         validUntil: '02/2027',
       ),
       RewardVoucherItem(
@@ -441,7 +453,8 @@ class RewardVoucherItem {
         title: 'Miễn phí kiểm tra 30 hạng mục an toàn',
         pointsRequired: 100,
         category: 'Voucher dịch vụ',
-        description: 'Kiểm tra toàn diện hệ thống phanh, lốp, động cơ và điện xe.',
+        description:
+            'Kiểm tra toàn diện hệ thống phanh, lốp, động cơ và điện xe.',
         validUntil: '02/2027',
       ),
       RewardVoucherItem(
@@ -449,7 +462,8 @@ class RewardVoucherItem {
         title: 'Phiếu quà tặng GotIt trị giá 100.000 VNĐ',
         pointsRequired: 150,
         category: 'Phiếu quà tặng Gotit',
-        description: 'Sử dụng thanh toán tại hơn 300 thương hiệu ăn uống & mua sắm.',
+        description:
+            'Sử dụng thanh toán tại hơn 300 thương hiệu ăn uống & mua sắm.',
         validUntil: '01/2027',
       ),
     ];

@@ -894,10 +894,19 @@ class _StaffDashboardScreenState extends State<StaffDashboardScreen> {
                     ),
                   ),
                   title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(inv['invoiceCode'] ?? 'Hóa đơn', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text(currencyFormatter.format(finalAmount), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: isPaid ? Colors.green : Colors.red)),
+                      Expanded(
+                        child: Text(
+                          inv['invoiceCode'] ?? 'Hóa đơn',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        currencyFormatter.format(finalAmount),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: isPaid ? Colors.green : Colors.red),
+                      ),
                     ],
                   ),
                   subtitle: Column(
