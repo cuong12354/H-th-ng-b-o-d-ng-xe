@@ -12,6 +12,7 @@ import '../models/service_model.dart';
 import '../models/part_model.dart';
 import 'staff_dashboard_screen.dart';
 import 'login_screen.dart';
+import '../widgets/admin_store_content_view.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -65,6 +66,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         return isShort ? 'Khách hàng' : 'Danh sách Khách hàng';
       case 6:
         return isShort ? 'Đánh giá' : 'Đánh giá từ khách hàng';
+      case 7:
+        return isShort ? 'Cấu hình Tiệm' : 'Cấu hình Tiệm & Nội dung App Khách hàng';
       default:
         return 'Quản trị hệ thống';
     }
@@ -172,6 +175,14 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 _buildMenuItem(4, Icons.build_outlined, 'Cấu hình Dịch vụ Gara'),
                 _buildMenuItem(5, Icons.people_outline, 'Danh sách Khách hàng'),
                 _buildMenuItem(6, Icons.star_outline, 'Đánh giá từ khách hàng'),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  child: Text(
+                    'CẤU HÌNH TIỆM & APP KHÁCH',
+                    style: TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1),
+                  ),
+                ),
+                _buildMenuItem(7, Icons.storefront_outlined, 'Cấu hình Tiệm & Chiến dịch', badgeText: 'App Khách'),
 
                 const Divider(color: Colors.white12, height: 20),
 
@@ -467,6 +478,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         return _buildCustomersTab();
       case 6:
         return _buildReviewsTab();
+      case 7:
+        return const AdminStoreContentView();
       default:
         return _buildOverview();
     }

@@ -16,6 +16,7 @@ import 'login_screen.dart';
 import 'notification_screen.dart';
 import 'invoice_screen.dart';
 import '../widgets/server_config_dialog.dart';
+import '../providers/store_content_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -497,25 +498,32 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 12),
 
           // Horizontal News Carousel
-          SizedBox(
-            height: 175,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                _buildNewsCard(
-                  imageUrl: 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=500',
-                  title: 'KHAI TRƯƠNG CƠ SỞ ỦY QUYỀN TẠI CAO BẰNG',
+          Consumer<StoreContentProvider>(
+            builder: (context, storeContent, _) {
+              final newsList = storeContent.newsList;
+              if (newsList.isEmpty) {
+                return const SizedBox(
+                  height: 100,
+                  child: Center(
+                    child: Text('Chưa có tin tức nào.', style: TextStyle(color: Colors.white60)),
+                  ),
+                );
+              }
+              return SizedBox(
+                height: 175,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: newsList.length,
+                  itemBuilder: (context, idx) {
+                    final item = newsList[idx];
+                    return _buildNewsCard(
+                      imageUrl: item.imageUrl,
+                      title: item.title,
+                    );
+                  },
                 ),
-                _buildNewsCard(
-                  imageUrl: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=500',
-                  title: 'KHAI TRƯƠNG NHÀ PHÂN PHỐI BITCAR KHÁNH HÒA',
-                ),
-                _buildNewsCard(
-                  imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500',
-                  title: 'CHƯƠNG TRÌNH TRI ÂN BẢO DƯỠNG MIỄN PHÍ DẦU NHỚT',
-                ),
-              ],
-            ),
+              );
+            },
           ),
           const SizedBox(height: 16),
 
@@ -1692,17 +1700,30 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 14),
 
         // Voucher Cards
-        _buildVoucherCard(
-          title: 'Voucher Dịch Vụ 1.000.000 VNĐ (Loyalty)',
-          points: '500 điểm',
-        ),
-        _buildVoucherCard(
-          title: 'Voucher Dịch Vụ 500.000 VNĐ (Loyalty)',
-          points: '250 điểm',
-        ),
-        _buildVoucherCard(
-          title: 'Miễn phí kiểm tra 30 hạng mục an toàn',
-          points: '100 điểm',
+        Consumer<StoreContentProvider>(
+          builder: (context, storeContent, _) {
+            var vouchers = storeContent.vouchers;
+            if (_selectedRewardFilter != 'Tất cả') {
+              vouchers = vouchers.where((v) => v.category == _selectedRewardFilter).toList();
+            }
+            if (vouchers.isEmpty) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Center(
+                  child: Text(
+                    'Chưa có voucher nào trong danh mục này.',
+                    style: TextStyle(color: Colors.white60),
+                  ),
+                ),
+              );
+            }
+            return Column(
+              children: vouchers.map((v) => _buildVoucherCard(
+                title: v.title,
+                points: '${v.pointsRequired} điểm',
+              )).toList(),
+            );
+          },
         ),
         const SizedBox(height: 24),
       ],
@@ -2135,39 +2156,53 @@ class _HomeScreenState extends State<HomeScreen> {
   // POPUP DIALOGS & ACTIONS
   // =========================================================================
   void _showGarageLocationDialog() {
+    final storeInfo = Provider.of<StoreContentProvider>(context, listen: false).storeInfo;
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1E212B),
-        title: const Text(
-          'Nhà phân phối / Gara ủy quyền',
-          style: TextStyle(color: Colors.white),
+        title: Row(
+          children: const [
+            Icon(Icons.location_on, color: Color(0xFFE60012), size: 22),
+            SizedBox(width: 8),
+            Text(
+              'Nhà phân phối / Gara ủy quyền',
+              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
-              'GARA TIỆM XE MÁY & Ô TÔ CHÍNH HÃNG',
-              style: TextStyle(
+              storeInfo.garageName,
+              style: const TextStyle(
                 color: Color(0xFFE60012),
                 fontWeight: FontWeight.bold,
+                fontSize: 14,
               ),
             ),
-            SizedBox(height: 6),
+            const SizedBox(height: 8),
             Text(
-              '📍 Địa chỉ: 68 Võ Văn Ngân, P. Linh Chiểu, TP. Thủ Đức, TP. Hồ Chí Minh',
-              style: TextStyle(color: Colors.white70),
+              '📍 Địa chỉ: ${storeInfo.address}',
+              style: const TextStyle(color: Colors.white70, fontSize: 13),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 6),
             Text(
-              '📞 Hotline: 1900 6868',
-              style: TextStyle(color: Colors.white70),
+              '📞 Hotline: ${storeInfo.hotline}',
+              style: const TextStyle(color: Colors.white70, fontSize: 13),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 6),
             Text(
-              '⏰ Giờ mở cửa: 07:30 - 18:00 (Tất cả các ngày)',
-              style: TextStyle(color: Colors.white70),
+              '🚨 Cứu hộ 24/7: ${storeInfo.rescueHotline}',
+              style: const TextStyle(color: Color(0xFF2ECC71), fontWeight: FontWeight.bold, fontSize: 13),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              '⏰ Giờ mở cửa: ${storeInfo.openingHours}',
+              style: const TextStyle(color: Colors.white70, fontSize: 13),
             ),
           ],
         ),
@@ -2193,31 +2228,54 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showSupportHotlineDialog() {
+    final storeInfo = Provider.of<StoreContentProvider>(context, listen: false).storeInfo;
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1E212B),
-        title: const Text(
-          'Hỗ trợ & Cứu hộ 24/7',
-          style: TextStyle(color: Colors.white),
+        title: Row(
+          children: const [
+            Icon(Icons.support_agent, color: Color(0xFFE60012), size: 22),
+            SizedBox(width: 8),
+            Text(
+              'Hỗ trợ & Cứu hộ 24/7',
+              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.support_agent, color: Color(0xFFE60012), size: 48),
-            SizedBox(height: 12),
-            Text(
-              'Tổng đài Chăm sóc khách hàng & Cứu hộ:',
+          children: [
+            const Icon(Icons.support_agent, color: Color(0xFFE60012), size: 48),
+            const SizedBox(height: 12),
+            const Text(
+              'Tổng đài Chăm sóc khách hàng:',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white70),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 4),
             Text(
-              '1800 1514 (Miễn phí)',
-              style: TextStyle(
+              storeInfo.hotline,
+              style: const TextStyle(
                 color: Color(0xFFE60012),
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 22,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Đường dây nóng Cứu hộ khẩn cấp 24/7:',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white70),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              storeInfo.rescueHotline,
+              style: const TextStyle(
+                color: Color(0xFF2ECC71),
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
             ),
           ],
@@ -2566,41 +2624,108 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showCampaignDialog() {
+    final storeContent = Provider.of<StoreContentProvider>(context, listen: false);
+    final campaigns = storeContent.campaigns;
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1E212B),
-        title: const Text(
-          'Chiến dịch dịch vụ hiện tại',
-          style: TextStyle(color: Colors.white),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: Row(
           children: const [
+            Icon(Icons.percent, color: Color(0xFFE60012), size: 22),
+            SizedBox(width: 8),
             Text(
-              '🔥 Khuyến mãi mùa mưa:',
-              style: TextStyle(
-                color: Color(0xFFE60012),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 6),
-            Text(
-              'Giảm 20% gạt mưa chính hãng và dầu động cơ.',
-              style: TextStyle(color: Colors.white70),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '🔥 Miễn phí kiểm tra bình ắc quy và hệ thống phanh.',
-              style: TextStyle(color: Colors.white70),
+              'Chiến dịch dịch vụ & Ưu đãi',
+              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
+        ),
+        content: SizedBox(
+          width: 420,
+          child: campaigns.isEmpty
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(
+                    child: Text('Hiện chưa có chiến dịch khuyến mãi nào.', style: TextStyle(color: Colors.white70)),
+                  ),
+                )
+              : ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: campaigns.length,
+                  separatorBuilder: (_, __) => const Divider(color: Colors.white12, height: 20),
+                  itemBuilder: (context, idx) {
+                    final c = campaigns[idx];
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                c.title,
+                                style: const TextStyle(
+                                  color: Color(0xFFE60012),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            if (c.discountPercent > 0)
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE60012),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  '-${c.discountPercent}%',
+                                  style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                          ],
+                        ),
+                        if (c.highlight.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Text(
+                            c.highlight,
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+                          ),
+                        ],
+                        if (c.description.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            c.description,
+                            style: const TextStyle(color: Colors.white70, fontSize: 12),
+                          ),
+                        ],
+                        if (c.validUntil.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Text(
+                            '⏰ Hạn áp dụng: ${c.validUntil}',
+                            style: const TextStyle(color: Color(0xFF8E92A0), fontSize: 11),
+                          ),
+                        ],
+                      ],
+                    );
+                  },
+                ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: const Text('Đóng', style: TextStyle(color: Colors.white70)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFE60012),
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(ctx);
+              _navigateToBooking(context);
+            },
+            child: const Text('Đặt lịch áp dụng ngay'),
           ),
         ],
       ),
@@ -2608,47 +2733,114 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showPrepaidPackagesDialog() {
+    final storeContent = Provider.of<StoreContentProvider>(context, listen: false);
+    final packages = storeContent.packages;
+    final currency = NumberFormat.currency(locale: 'vi_VN', symbol: 'đ');
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1E212B),
-        title: const Text(
-          'Gói bảo dưỡng trả trước',
-          style: TextStyle(color: Colors.white),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: Row(
           children: const [
+            Icon(Icons.confirmation_number_outlined, color: Color(0xFFE60012), size: 22),
+            SizedBox(width: 8),
             Text(
-              '💎 Gói 1 Năm (2 lần bảo dưỡng):',
-              style: TextStyle(
-                color: Color(0xFFE60012),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              'Tiết kiệm 15% so với giá lẻ.',
-              style: TextStyle(color: Colors.white70),
-            ),
-            SizedBox(height: 10),
-            Text(
-              '💎 Gói 2 Năm (4 lần bảo dưỡng):',
-              style: TextStyle(
-                color: Color(0xFFE60012),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              'Tiết kiệm 25% + Miễn phí rửa xe toàn diện.',
-              style: TextStyle(color: Colors.white70),
+              'Gói bảo dưỡng trả trước',
+              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
+        ),
+        content: SizedBox(
+          width: 420,
+          child: packages.isEmpty
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(
+                    child: Text('Chưa có gói bảo dưỡng trả trước nào.', style: TextStyle(color: Colors.white70)),
+                  ),
+                )
+              : ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: packages.length,
+                  separatorBuilder: (_, __) => const Divider(color: Colors.white12, height: 20),
+                  itemBuilder: (context, idx) {
+                    final pkg = packages[idx];
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                pkg.name,
+                                style: const TextStyle(
+                                  color: Color(0xFFE60012),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              currency.format(pkg.price),
+                              style: const TextStyle(
+                                color: Color(0xFF2ECC71),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (pkg.savings.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2ECC71).withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              pkg.savings,
+                              style: const TextStyle(color: Color(0xFF2ECC71), fontSize: 11, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 6),
+                        ...pkg.benefits.map((b) => Padding(
+                              padding: const EdgeInsets.only(bottom: 3),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('✔ ', style: TextStyle(color: Color(0xFF2ECC71), fontSize: 11)),
+                                  Expanded(
+                                    child: Text(
+                                      b,
+                                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ],
+                    );
+                  },
+                ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: const Text('Đóng', style: TextStyle(color: Colors.white70)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFE60012),
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(ctx);
+              _navigateToBooking(context);
+            },
+            child: const Text('Đăng ký gói ngay'),
           ),
         ],
       ),
@@ -3318,43 +3510,110 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showMaintenanceScheduleDialog() {
+    final storeContent = Provider.of<StoreContentProvider>(context, listen: false);
+    final milestones = storeContent.milestones;
+    final currency = NumberFormat.currency(locale: 'vi_VN', symbol: 'đ');
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1E212B),
-        title: const Text(
-          'Lịch trình bảo dưỡng khuyến nghị',
-          style: TextStyle(color: Colors.white),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: Row(
           children: const [
+            Icon(Icons.calendar_month, color: Color(0xFFE60012), size: 22),
+            SizedBox(width: 8),
             Text(
-              '• 5.000 km: Thay dầu động cơ, kiểm tra lọc gió',
-              style: TextStyle(color: Colors.white70),
-            ),
-            SizedBox(height: 6),
-            Text(
-              '• 10.000 km: Thay lọc dầu, đảo lốp, kiểm tra phanh',
-              style: TextStyle(color: Colors.white70),
-            ),
-            SizedBox(height: 6),
-            Text(
-              '• 20.000 km: Thay lọc gió động cơ, lọc gió điều hòa',
-              style: TextStyle(color: Colors.white70),
-            ),
-            SizedBox(height: 6),
-            Text(
-              '• 40.000 km: Thay bugi, dầu hộp số, nước làm mát',
-              style: TextStyle(color: Colors.white70),
+              'Lịch trình bảo dưỡng khuyến nghị',
+              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
+        ),
+        content: SizedBox(
+          width: 440,
+          child: milestones.isEmpty
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(
+                    child: Text('Chưa có lịch trình bảo dưỡng nào.', style: TextStyle(color: Colors.white70)),
+                  ),
+                )
+              : ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: milestones.length,
+                  separatorBuilder: (_, __) => const Divider(color: Colors.white12, height: 16),
+                  itemBuilder: (context, idx) {
+                    final m = milestones[idx];
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE60012).withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(color: const Color(0xFFE60012)),
+                              ),
+                              child: Text(
+                                '${NumberFormat('#,###').format(m.km)} KM',
+                                style: const TextStyle(
+                                  color: Color(0xFFE60012),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                m.title,
+                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                              ),
+                            ),
+                            if (m.estimatedCost > 0)
+                              Text(
+                                currency.format(m.estimatedCost),
+                                style: const TextStyle(color: Color(0xFF2ECC71), fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        ...m.tasks.map((task) => Padding(
+                              padding: const EdgeInsets.only(left: 4, bottom: 3),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text('• ', style: TextStyle(color: Color(0xFFE60012))),
+                                  Expanded(
+                                    child: Text(
+                                      task,
+                                      style: const TextStyle(color: Colors.white70, fontSize: 12),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ],
+                    );
+                  },
+                ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: const Text('Đóng', style: TextStyle(color: Colors.white70)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFE60012),
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(ctx);
+              _navigateToBooking(context);
+            },
+            child: const Text('Đặt lịch hẹn bảo dưỡng'),
           ),
         ],
       ),

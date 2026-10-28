@@ -9,6 +9,7 @@ import 'providers/appointment_provider.dart';
 import 'providers/invoice_provider.dart';
 import 'providers/review_provider.dart';
 import 'providers/part_provider.dart';
+import 'providers/store_content_provider.dart';
 import 'screens/splash_screen.dart';
 import 'services/local_storage_service.dart';
 
@@ -28,6 +29,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => InvoiceProvider()),
         ChangeNotifierProvider(create: (_) => ReviewProvider()),
         ChangeNotifierProvider(create: (_) => PartProvider()),
+        ChangeNotifierProvider(create: (_) => StoreContentProvider()),
       ],
       child: const VehicleCareApp(),
     ),
