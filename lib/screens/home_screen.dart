@@ -1169,7 +1169,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildDarkFeatureCard(
                 icon: Icons.receipt_long,
-                title: 'Hóa đơn & Biên lai\n(Đã thanh toán tại quầy)',
+                title: 'Hóa đơn & Biên lai\n(Đã thanh toán)',
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const InvoiceScreen()),
@@ -1285,8 +1285,8 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        height: 125,
-        padding: const EdgeInsets.all(16),
+        constraints: const BoxConstraints(minHeight: 125),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         decoration: BoxDecoration(
           color: const Color(0xFF1E212B),
           borderRadius: BorderRadius.circular(12),
@@ -1294,16 +1294,20 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: Colors.white, size: 36),
-            const SizedBox(height: 10),
+            Icon(icon, color: Colors.white, size: 28),
+            const SizedBox(height: 6),
             Text(
               title,
               textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 13,
+                fontSize: 12,
+                height: 1.2,
               ),
             ),
           ],
@@ -1967,7 +1971,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildDarkFeatureCard(
                 icon: Icons.car_crash_outlined,
-                title: 'Đường dây nóng cứu hộ\nNhà Phân Phối',
+                title: 'Hotline cứu hộ\nNhà Phân Phối',
                 onTap: () => _showSupportHotlineDialog(),
               ),
             ),
@@ -1975,7 +1979,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildDarkFeatureCard(
                 icon: Icons.headset_mic_outlined,
-                title: 'Hỗ trợ từ Nhà Phân Phối\nyêu thích',
+                title: 'Hỗ trợ kỹ thuật\nNhà Phân Phối',
                 onTap: () => _showSupportHotlineDialog(),
               ),
             ),
@@ -1987,7 +1991,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildDarkFeatureCard(
                 icon: Icons.headphones_outlined,
-                title: 'Hỗ trợ từ Blackmyth\nAuto Việt Nam',
+                title: 'Tổng đài hỗ trợ\nBlackmyth Auto',
                 onTap: () => _showSupportHotlineDialog(),
               ),
             ),
@@ -1995,7 +1999,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildDarkFeatureCard(
                 icon: Icons.smartphone_outlined,
-                title: 'Sự cố ứng dụng\n(Báo lỗi kỹ thuật)',
+                title: 'Báo lỗi sự cố\n(Góp ý kỹ thuật)',
                 onTap: () => _showAppFeedbackDialog(),
               ),
             ),
