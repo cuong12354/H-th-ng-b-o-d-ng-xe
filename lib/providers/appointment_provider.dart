@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../services/api_service.dart';
 
 class AppointmentProvider extends ChangeNotifier {
@@ -34,13 +35,16 @@ class AppointmentProvider extends ChangeNotifier {
     required double totalEstimatedPrice,
   }) async {
     try {
-      final response = await _apiService.dio.post('/Appointment', data: {
-        'vehicleId': vehicleId,
-        'scheduledDate': scheduledDate.toUtc().toIso8601String(),
-        'notes': '',
-        'serviceIds': serviceIds,
-        'totalEstimatedPrice': totalEstimatedPrice,
-      });
+      final response = await _apiService.dio.post(
+        '/Appointment',
+        data: {
+          'vehicleId': vehicleId,
+          'scheduledDate': scheduledDate.toUtc().toIso8601String(),
+          'notes': '',
+          'serviceIds': serviceIds,
+          'totalEstimatedPrice': totalEstimatedPrice,
+        },
+      );
 
       if (response.statusCode == 200 && response.data['success'] == true) {
         await fetchAppointments();
@@ -54,9 +58,10 @@ class AppointmentProvider extends ChangeNotifier {
 
   Future<bool> updateAppointmentStatus(int id, String status) async {
     try {
-      final response = await _apiService.dio.put('/Appointment/$id/status', data: {
-        'status': status
-      });
+      final response = await _apiService.dio.put(
+        '/Appointment/$id/status',
+        data: {'status': status},
+      );
       if (response.statusCode == 200 && response.data['success'] == true) {
         await fetchAppointments();
         return true;
@@ -69,7 +74,9 @@ class AppointmentProvider extends ChangeNotifier {
 
   Future<bool> createInvoice(int appointmentId) async {
     try {
-      final response = await _apiService.dio.post('/Invoice/from-appointment/$appointmentId');
+      final response = await _apiService.dio.post(
+        '/Invoice/from-appointment/$appointmentId',
+      );
       if (response.statusCode == 200 && response.data['success'] == true) {
         return true;
       }
@@ -88,14 +95,17 @@ class AppointmentProvider extends ChangeNotifier {
     required List<int> serviceIds,
   }) async {
     try {
-      final response = await _apiService.dio.post('/Appointment/staff-create', data: {
-        'customerName': customerName,
-        'customerPhone': customerPhone,
-        'licensePlate': licensePlate,
-        'vehicleBrand': vehicleBrand,
-        'vehicleModel': vehicleModel,
-        'serviceIds': serviceIds,
-      });
+      final response = await _apiService.dio.post(
+        '/Appointment/staff-create',
+        data: {
+          'customerName': customerName,
+          'customerPhone': customerPhone,
+          'licensePlate': licensePlate,
+          'vehicleBrand': vehicleBrand,
+          'vehicleModel': vehicleModel,
+          'serviceIds': serviceIds,
+        },
+      );
 
       if (response.statusCode == 200 && response.data['success'] == true) {
         await fetchAppointments();

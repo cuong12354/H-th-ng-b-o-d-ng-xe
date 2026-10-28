@@ -1643,20 +1643,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 8),
-        Center(
-          child: TextButton(
-            onPressed: () => _showUserProfileModal(context),
-            child: const Text(
-              'Xem thông tin thành viên >',
-              style: TextStyle(
-                color: Color(0xFFE60012),
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
+        const SizedBox(height: 12),
 
         // Banner Ví Voucher của tôi
         Container(
