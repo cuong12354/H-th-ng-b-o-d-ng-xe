@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -17,6 +18,7 @@ import 'notification_screen.dart';
 import 'invoice_screen.dart';
 import '../widgets/server_config_dialog.dart';
 import '../providers/store_content_provider.dart';
+import '../models/store_content_models.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -1466,6 +1468,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final carDisplay = vehicle != null
         ? '${vehicle.brand} ${vehicle.model} • ${vehicle.licensePlate}'
         : 'Attrage • 98A-35711';
+    final storeContent = Provider.of<StoreContentProvider>(context);
 
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -1495,9 +1498,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Text(
-                      '315 Điểm đổi quà • Nhấn để xem hồ sơ',
-                      style: TextStyle(color: Color(0xFFB0B5C3), fontSize: 12),
+                    Text(
+                      '${storeContent.userVoucherPoints} Điểm voucher • Nhấn để xem hồ sơ',
+                      style: const TextStyle(color: Color(0xFFB0B5C3), fontSize: 12),
                     ),
                   ],
                 ),
@@ -1563,9 +1566,29 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  const Text(
-                    'Điểm xếp hạng: 2.100',
-                    style: TextStyle(color: Colors.white70, fontSize: 11),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE60012).withAlpha(40),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE60012)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.stars, color: Color(0xFFFFD700), size: 14),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Điểm voucher: ${storeContent.userVoucherPoints}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -1581,16 +1604,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       letterSpacing: 2,
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: const Icon(
-                      Icons.qr_code_2,
-                      color: Colors.black,
-                      size: 28,
+                  InkWell(
+                    onTap: () {
+                      _showMemberQrModal(context, userName, carDisplay);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Icon(
+                        Icons.qr_code_2,
+                        color: Colors.black,
+                        size: 28,
+                      ),
                     ),
                   ),
                 ],
@@ -1618,7 +1646,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 8),
         Center(
           child: TextButton(
-            onPressed: () {},
+            onPressed: () => _showUserProfileModal(context),
             child: const Text(
               'Xem thông tin thành viên >',
               style: TextStyle(
@@ -1627,6 +1655,64 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+          ),
+        ),
+
+        // Banner Ví Voucher của tôi
+        Container(
+          margin: const EdgeInsets.only(top: 4, bottom: 12),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF2C1E23), Color(0xFF1E212B)],
+            ),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFE60012).withAlpha(120)),
+          ),
+          child: ListTile(
+            dense: true,
+            leading: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE60012).withAlpha(40),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.confirmation_number_outlined,
+                  color: Color(0xFFE60012), size: 20),
+            ),
+            title: Row(
+              children: [
+                const Text(
+                  'Ví Voucher của tôi',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE60012),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '${storeContent.myRedeemedVouchers.length} vé',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            subtitle: const Text(
+              'Xem mã QR & voucher đã đổi để sử dụng tại Gara',
+              style: TextStyle(color: Color(0xFFB0B5C3), fontSize: 11),
+            ),
+            trailing: const Icon(Icons.arrow_forward_ios,
+                color: Colors.white54, size: 14),
+            onTap: () => _showMyVouchersModal(context, storeContent),
           ),
         ),
         const SizedBox(height: 12),
@@ -1683,9 +1769,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            const Icon(
-              Icons.keyboard_double_arrow_right,
-              color: Colors.white70,
+            InkWell(
+              onTap: () => _showMyVouchersModal(context, storeContent),
+              child: Row(
+                children: const [
+                  Text(
+                    'Ví quà của tôi',
+                    style: TextStyle(
+                        color: Color(0xFFE60012),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: 4),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Color(0xFFE60012),
+                    size: 12,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -1728,8 +1830,9 @@ class _HomeScreenState extends State<HomeScreen> {
               children: vouchers
                   .map(
                     (v) => _buildVoucherCard(
-                      title: v.title,
-                      points: '${v.pointsRequired} điểm',
+                      context: context,
+                      storeContent: storeContent,
+                      voucher: v,
                     ),
                   )
                   .toList(),
@@ -1795,7 +1898,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildVoucherCard({required String title, required String points}) {
+  Widget _buildVoucherCard({
+    required BuildContext context,
+    required StoreContentProvider storeContent,
+    required RewardVoucherItem voucher,
+  }) {
+    final canRedeem = storeContent.userVoucherPoints >= voucher.pointsRequired;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
@@ -1823,7 +1931,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  voucher.title,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -1831,30 +1939,776 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  'Cần: $points',
-                  style: const TextStyle(
-                    color: Color(0xFFE60012),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      'Cần: ${voucher.pointsRequired} điểm',
+                      style: const TextStyle(
+                        color: Color(0xFFE60012),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      canRedeem
+                          ? '(Đủ điểm)'
+                          : '(Thiếu ${voucher.pointsRequired - storeContent.userVoucherPoints}đ)',
+                      style: TextStyle(
+                        color: canRedeem ? Colors.greenAccent : Colors.white38,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFE60012),
+              backgroundColor: canRedeem
+                  ? const Color(0xFFE60012)
+                  : const Color(0xFF333846),
               foregroundColor: Colors.white,
             ),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Đã đổi $title thành công!')),
-              );
-            },
+            onPressed: () =>
+                _confirmAndRedeemVoucher(context, storeContent, voucher),
             child: const Text('Đổi quà'),
           ),
         ],
+      ),
+    );
+  }
+
+  // =================== DIALOGS & MODALS CHO VÍ VOUCHER & ĐỔI QUÀ ===================
+
+  /// Modal hiển thị mã QR thành viên
+  void _showMemberQrModal(BuildContext context, String name, String vehicle) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF1A1D24),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'MÃ THÀNH VIÊN VIP',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '$name • $vehicle',
+              style: const TextStyle(color: Colors.white70, fontSize: 13),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(Icons.qr_code_2, size: 160, color: Colors.black),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Đưa mã này cho nhân viên Blackmyth Auto quét để tích điểm và áp dụng ưu đãi khi bảo dưỡng.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white60, fontSize: 12),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE60012),
+                ),
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Đóng', style: TextStyle(color: Colors.white)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Xác nhận đổi quà & trừ điểm
+  void _confirmAndRedeemVoucher(
+    BuildContext context,
+    StoreContentProvider storeContent,
+    RewardVoucherItem voucher,
+  ) {
+    if (storeContent.userVoucherPoints < voucher.pointsRequired) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: const Color(0xFF1E212B),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Row(
+            children: const [
+              Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 28),
+              SizedBox(width: 8),
+              Text(
+                'Chưa đủ điểm',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Để đổi "${voucher.title}", bạn cần:',
+                style: const TextStyle(color: Colors.white70, fontSize: 13),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Điểm yêu cầu:',
+                      style: TextStyle(color: Colors.white60)),
+                  Text('${voucher.pointsRequired} điểm',
+                      style: const TextStyle(
+                          color: Color(0xFFE60012),
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Điểm hiện có:',
+                      style: TextStyle(color: Colors.white60)),
+                  Text('${storeContent.userVoucherPoints} điểm',
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Bạn còn thiếu ${voucher.pointsRequired - storeContent.userVoucherPoints} điểm nữa. Hãy tiếp tục bảo dưỡng xe tại Blackmyth Auto để tích lũy thêm điểm nhé!',
+                style:
+                    const TextStyle(color: Colors.orangeAccent, fontSize: 12),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE60012)),
+              onPressed: () => Navigator.pop(ctx),
+              child:
+                  const Text('Đã hiểu', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    // Đủ điểm -> Xác nhận
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1E212B),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: const [
+            Icon(Icons.card_giftcard, color: Color(0xFFE60012), size: 26),
+            SizedBox(width: 8),
+            Text(
+              'Xác nhận đổi quà',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Bạn có chắc muốn dùng ${voucher.pointsRequired} điểm để đổi phần quà này không?',
+              style: const TextStyle(color: Colors.white, fontSize: 13),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF101217),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFF2C303E)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    voucher.title,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13),
+                  ),
+                  const SizedBox(height: 4),
+                  Text('Hạn sử dụng: ${voucher.validUntil}',
+                      style:
+                          const TextStyle(color: Colors.white60, fontSize: 11)),
+                  const Divider(color: Color(0xFF2C303E), height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Điểm còn lại sau đổi:',
+                          style:
+                              TextStyle(color: Colors.white70, fontSize: 12)),
+                      Text(
+                        '${storeContent.userVoucherPoints - voucher.pointsRequired} điểm',
+                        style: const TextStyle(
+                            color: Color(0xFFFFD700),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Hủy', style: TextStyle(color: Colors.white60)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFE60012)),
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final redeemed =
+                  await storeContent.redeemRewardVoucher(voucher);
+              if (redeemed != null && context.mounted) {
+                _showVoucherSuccessDialog(context, redeemed);
+              }
+            },
+            child: const Text('Đổi quà ngay',
+                style: TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Dialog bật lên sau khi đổi thành công: Hiển thị Mã vé + QR Code
+  void _showVoucherSuccessDialog(
+      BuildContext context, CustomerRedeemedVoucher voucher) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF1E212B),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: const Color(0xFFE60012), width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFE60012).withAlpha(80),
+                blurRadius: 24,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Top Header
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFE60012), Color(0xFFA8000D)],
+                  ),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(18)),
+                ),
+                child: Column(
+                  children: const [
+                    Icon(Icons.check_circle_rounded,
+                        color: Colors.white, size: 44),
+                    SizedBox(height: 6),
+                    Text(
+                      'ĐỔI QUÀ THÀNH CÔNG!',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                    Text(
+                      'Đã lưu vào "Ví Voucher của tôi"',
+                      style: TextStyle(color: Colors.white70, fontSize: 11),
+                    ),
+                  ],
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Text(
+                      voucher.title,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // QR Code Frame
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Column(
+                        children: [
+                          const Icon(Icons.qr_code_2,
+                              size: 130, color: Colors.black),
+                          const SizedBox(height: 4),
+                          Text(
+                            voucher.code,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 14,
+                              letterSpacing: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Copy button
+                    InkWell(
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(text: voucher.code));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Đã sao chép mã: ${voucher.code}'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2C303E),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(Icons.copy, color: Colors.white70, size: 14),
+                            SizedBox(width: 6),
+                            Text('Chạm để sao chép mã',
+                                style: TextStyle(
+                                    color: Colors.white70, fontSize: 11)),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Hạn sử dụng:',
+                            style: TextStyle(
+                                color: Colors.white60, fontSize: 12)),
+                        Text(
+                          voucher.validUntil,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Điểm đã trừ:',
+                            style: TextStyle(
+                                color: Colors.white60, fontSize: 12)),
+                        Text(
+                          '${voucher.pointsSpent} điểm',
+                          style: const TextStyle(
+                              color: Color(0xFFE60012),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Đưa mã này cho nhân viên tại quầy Gara Blackmyth Auto để được áp dụng giảm giá ngay.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white54, fontSize: 11),
+                    ),
+                    const SizedBox(height: 16),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFE60012),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text('Hoàn tất & Đóng',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Modal Ví Voucher của tôi: Danh sách các voucher đã đổi
+  void _showMyVouchersModal(
+      BuildContext context, StoreContentProvider storeContent) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF16181F),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.85,
+        minChildSize: 0.5,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) {
+          final vouchers = storeContent.myRedeemedVouchers;
+          return Column(
+            children: [
+              // Header Drag handle
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 10, bottom: 6),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.confirmation_number,
+                            color: Color(0xFFE60012)),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Ví Voucher của tôi (${vouchers.length})',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.white70),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(color: Color(0xFF2C303E), height: 1),
+
+              // Content List
+              Expanded(
+                child: vouchers.isEmpty
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF232731),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.card_giftcard,
+                                  size: 48,
+                                  color: Colors.white38,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                'Bạn chưa đổi voucher nào',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              const Text(
+                                'Hãy dùng điểm tích lũy của bạn để đổi các phiếu giảm giá dịch vụ hoặc thẻ quà tặng!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white60, fontSize: 13),
+                              ),
+                              const SizedBox(height: 20),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFE60012),
+                                ),
+                                onPressed: () => Navigator.pop(ctx),
+                                child: const Text('Xem danh sách quà tặng',
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        controller: scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount: vouchers.length,
+                        itemBuilder: (context, index) {
+                          final v = vouchers[index];
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1E212B),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: v.isUsed
+                                    ? Colors.white12
+                                    : const Color(0xFFE60012).withAlpha(100),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          color: v.isUsed
+                                              ? Colors.grey.withAlpha(40)
+                                              : Colors.green.withAlpha(40),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                          border: Border.all(
+                                            color: v.isUsed
+                                                ? Colors.grey
+                                                : Colors.green,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          v.isUsed
+                                              ? 'ĐÃ SỬ DỤNG'
+                                              : 'KHẢ DỤNG',
+                                          style: TextStyle(
+                                            color: v.isUsed
+                                                ? Colors.grey
+                                                : Colors.greenAccent,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Đổi ngày: ${v.redeemedDate}',
+                                        style: const TextStyle(
+                                            color: Colors.white38,
+                                            fontSize: 11),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    v.title,
+                                    style: TextStyle(
+                                      color: v.isUsed
+                                          ? Colors.white54
+                                          : Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF101217),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Mã: ${v.code}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: 'monospace',
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            Clipboard.setData(
+                                                ClipboardData(text: v.code));
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    'Đã chép mã: ${v.code}'),
+                                                duration:
+                                                    const Duration(seconds: 1),
+                                              ),
+                                            );
+                                          },
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Icon(Icons.copy,
+                                                color: Colors.white70,
+                                                size: 16),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Hạn dùng: ${v.validUntil}',
+                                        style: const TextStyle(
+                                            color: Colors.white60,
+                                            fontSize: 11),
+                                      ),
+                                      Text(
+                                        '${v.pointsSpent} điểm',
+                                        style: const TextStyle(
+                                            color: Color(0xFFE60012),
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: OutlinedButton.icon(
+                                          style: OutlinedButton.styleFrom(
+                                            foregroundColor: Colors.white,
+                                            side: const BorderSide(
+                                                color: Color(0xFFE60012)),
+                                            padding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 8),
+                                          ),
+                                          onPressed: () {
+                                            _showVoucherSuccessDialog(
+                                                context, v);
+                                          },
+                                          icon: const Icon(
+                                              Icons.qr_code_2,
+                                              size: 18),
+                                          label: const Text('Mở mã QR',
+                                              style: TextStyle(fontSize: 12)),
+                                        ),
+                                      ),
+                                      if (!v.isUsed) ...[
+                                        const SizedBox(width: 8),
+                                        TextButton(
+                                          onPressed: () {
+                                            storeContent
+                                                .markVoucherUsed(v.id);
+                                          },
+                                          child: const Text(
+                                            'Đã dùng xong',
+                                            style: TextStyle(
+                                                color: Colors.white38,
+                                                fontSize: 11),
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

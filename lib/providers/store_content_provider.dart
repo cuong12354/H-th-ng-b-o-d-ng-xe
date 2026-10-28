@@ -10,6 +10,8 @@ class StoreContentProvider extends ChangeNotifier {
   static const String _keyMilestones = 'store_content_milestones';
   static const String _keyNews = 'store_content_news';
   static const String _keyVouchers = 'store_content_vouchers';
+  static const String _keyVoucherPoints = 'customer_voucher_points';
+  static const String _keyRedeemedVouchers = 'customer_redeemed_vouchers';
 
   StoreInfo _storeInfo = StoreInfo.defaultInfo();
   List<CampaignItem> _campaigns = CampaignItem.defaultCampaigns();
@@ -17,6 +19,9 @@ class StoreContentProvider extends ChangeNotifier {
   List<MaintenanceMilestone> _milestones = MaintenanceMilestone.defaultMilestones();
   List<NewsItem> _newsList = NewsItem.defaultNews();
   List<RewardVoucherItem> _vouchers = RewardVoucherItem.defaultVouchers();
+
+  int _userVoucherPoints = 315;
+  List<CustomerRedeemedVoucher> _myRedeemedVouchers = [];
 
   bool _isLoaded = false;
 
@@ -28,6 +33,8 @@ class StoreContentProvider extends ChangeNotifier {
   List<MaintenanceMilestone> get milestones => _milestones;
   List<NewsItem> get newsList => _newsList;
   List<RewardVoucherItem> get vouchers => _vouchers;
+  int get userVoucherPoints => _userVoucherPoints;
+  List<CustomerRedeemedVoucher> get myRedeemedVouchers => _myRedeemedVouchers;
   bool get isLoaded => _isLoaded;
 
   StoreContentProvider() {
@@ -77,6 +84,15 @@ class StoreContentProvider extends ChangeNotifier {
       if (vchStr != null && vchStr.isNotEmpty) {
         final List<dynamic> list = jsonDecode(vchStr);
         _vouchers = list.map((e) => RewardVoucherItem.fromJson(e)).toList();
+      }
+
+      // Customer Voucher Wallet & Points
+      _userVoucherPoints = prefs.getInt(_keyVoucherPoints) ?? 315;
+      final redStr = prefs.getString(_keyRedeemedVouchers);
+      if (redStr != null && redStr.isNotEmpty) {
+        final List<dynamic> list = jsonDecode(redStr);
+        _myRedeemedVouchers =
+            list.map((e) => CustomerRedeemedVoucher.fromJson(e)).toList();
       }
 
       _isLoaded = true;
@@ -219,6 +235,59 @@ class StoreContentProvider extends ChangeNotifier {
   Future<void> deleteVoucher(String id) async {
     _vouchers.removeWhere((v) => v.id == id);
     await saveVouchers();
+  }
+
+  // =================== CUSTOMER REDEEMED VOUCHERS & WALLET ===================
+  Future<void> saveVoucherWallet() async {
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_keyVoucherPoints, _userVoucherPoints);
+    await prefs.setString(
+      _keyRedeemedVouchers,
+      jsonEncode(_myRedeemedVouchers.map((e) => e.toJson()).toList()),
+    );
+  }
+
+  Future<CustomerRedeemedVoucher?> redeemRewardVoucher(
+      RewardVoucherItem voucher) async {
+    if (_userVoucherPoints < voucher.pointsRequired) {
+      return null;
+    }
+    _userVoucherPoints -= voucher.pointsRequired;
+    final now = DateTime.now();
+    final randomSuffix = (now.millisecondsSinceEpoch % 90000 + 10000).toString();
+    final code = voucher.category.contains('Got')
+        ? 'BM-GOTIT-$randomSuffix'
+        : 'BM-VCH-$randomSuffix';
+
+    final item = CustomerRedeemedVoucher(
+      id: now.millisecondsSinceEpoch.toString(),
+      voucherId: voucher.id,
+      title: voucher.title,
+      code: code,
+      pointsSpent: voucher.pointsRequired,
+      redeemedDate:
+          '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}',
+      validUntil: voucher.validUntil,
+      description: voucher.description,
+    );
+
+    _myRedeemedVouchers.insert(0, item);
+    await saveVoucherWallet();
+    return item;
+  }
+
+  Future<void> markVoucherUsed(String id) async {
+    final idx = _myRedeemedVouchers.indexWhere((v) => v.id == id);
+    if (idx != -1) {
+      _myRedeemedVouchers[idx] = _myRedeemedVouchers[idx].copyWith(isUsed: true);
+      await saveVoucherWallet();
+    }
+  }
+
+  Future<void> addVoucherPoints(int points) async {
+    _userVoucherPoints += points;
+    await saveVoucherWallet();
   }
 
   // =================== RESET TO DEFAULTS ===================

@@ -469,3 +469,80 @@ class RewardVoucherItem {
     ];
   }
 }
+
+/// Voucher mà khách hàng đã đổi thành công (Lưu trong Ví Voucher cá nhân)
+class CustomerRedeemedVoucher {
+  final String id;
+  final String voucherId;
+  final String title;
+  final String code;
+  final int pointsSpent;
+  final String redeemedDate;
+  final String validUntil;
+  final String description;
+  final bool isUsed;
+
+  CustomerRedeemedVoucher({
+    required this.id,
+    required this.voucherId,
+    required this.title,
+    required this.code,
+    required this.pointsSpent,
+    required this.redeemedDate,
+    required this.validUntil,
+    required this.description,
+    this.isUsed = false,
+  });
+
+  CustomerRedeemedVoucher copyWith({
+    String? id,
+    String? voucherId,
+    String? title,
+    String? code,
+    int? pointsSpent,
+    String? redeemedDate,
+    String? validUntil,
+    String? description,
+    bool? isUsed,
+  }) {
+    return CustomerRedeemedVoucher(
+      id: id ?? this.id,
+      voucherId: voucherId ?? this.voucherId,
+      title: title ?? this.title,
+      code: code ?? this.code,
+      pointsSpent: pointsSpent ?? this.pointsSpent,
+      redeemedDate: redeemedDate ?? this.redeemedDate,
+      validUntil: validUntil ?? this.validUntil,
+      description: description ?? this.description,
+      isUsed: isUsed ?? this.isUsed,
+    );
+  }
+
+  factory CustomerRedeemedVoucher.fromJson(Map<String, dynamic> json) {
+    return CustomerRedeemedVoucher(
+      id: json['id'] ?? '',
+      voucherId: json['voucherId'] ?? '',
+      title: json['title'] ?? '',
+      code: json['code'] ?? '',
+      pointsSpent: json['pointsSpent'] ?? 0,
+      redeemedDate: json['redeemedDate'] ?? '',
+      validUntil: json['validUntil'] ?? '',
+      description: json['description'] ?? '',
+      isUsed: json['isUsed'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'voucherId': voucherId,
+      'title': title,
+      'code': code,
+      'pointsSpent': pointsSpent,
+      'redeemedDate': redeemedDate,
+      'validUntil': validUntil,
+      'description': description,
+      'isUsed': isUsed,
+    };
+  }
+}
