@@ -285,6 +285,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     onPressed: () => _showAddPartDialog(context),
                   ),
                 IconButton(
+                  icon: const Icon(Icons.storefront_outlined),
+                  tooltip: 'Cấu hình Tiệm & Chiến dịch',
+                  onPressed: () => setState(() => _selectedIndex = 7),
+                ),
+                IconButton(
                   icon: const Icon(Icons.swap_horiz),
                   tooltip: 'Giao diện Staff',
                   onPressed: () {
@@ -712,6 +717,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                               ),
                               onPressed: () => _showAddPartDialog(context),
                             ),
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.storefront, size: 16),
+                              label: const Text('Cấu hình Tiệm & Chiến dịch'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFE60012),
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () => setState(() => _selectedIndex = 7),
+                            ),
                           ],
                         )
                       ],
@@ -776,6 +790,20 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                               ),
                             ),
                           ],
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            icon: const Icon(Icons.storefront, size: 16),
+                            label: const Text('Cấu hình Tiệm & Chiến dịch (App Khách)', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFE60012),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                            ),
+                            onPressed: () => setState(() => _selectedIndex = 7),
+                          ),
                         ),
                       ],
                     ),
